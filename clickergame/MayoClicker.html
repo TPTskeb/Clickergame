@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+    <title>MayoClicker</title>
+    <style>
+        .sectionLeft {
+            float: left;
+            width: 80%;
+        }
+        .sectionRight {
+            float: right;
+            width: 20%;
+        }   
+        .scoreContainer{
+            background-color: hsl(44, 58%, 79%);
+            width: 50%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .clickerContainer img {
+            position: relative;
+        }
+        .clickerContainer img:hover {
+            transform: scale(1.10);
+            transition: all .2s ease-in-out;
+        }
+        .clickerContainer img:active {
+            transform: scale(0.99);
+        }
+        .shopButton{
+            background-color: hsl(44, 58%, 79%);
+            transition: all .2s ease-in-out;
+            border-radius: 10px;
+            width: 100%;
+            margin: 10px 0px 10px 0px;
+        }
+        .shopButton:hover {
+            background-color: hsl(355, 77%, 50%);
+            transition: all 2s ease-in-out;
+        }
+        .shopButton #image {
+            width: 25%;
+        }
+        .shopButton img {
+            height: 64px;
+            width: 64px;
+
+        }
+        .shopButton #nameAndCost p {
+            margin: 0px;
+            width: 60%;
+        }
+        .shopButton #nameAndCost p:first-of-type {
+            font-size: 24px;
+        }
+        .shopButton #amount {
+            font-size: 40px;
+            color: #595959;
+        }
+        .sectionFooter{
+            margin-top: 20%;
+        }
+        .unselectable {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .button {
+          background-color: hsl(44, 58%, 79%);
+        }
+        .button:hover {
+            background-color: hsl(108, 77%, 50%);
+            transition: all .2s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sectionLeft">
+        <center>
+            <div class="scoreContainer unselectable">
+                <span id="score">0</span> Mayo<br>
+                <span id="scorepersecond">0</span> Mayo per second
+            </div>
+            <br>
+            <div class="clickerContainer unselectable">
+                <img src="images/MayoChan.jpg" alt="" width="256px" height="256px" onclick="addToScore(clickingPower)">
+            </div>
+           
+        </center>
+        <div class="sectionFooter">
+            <h5>Mayo Clicker Beta</h5>
+            <h4>Welcome To Mayo Clicker</h4>
+            <p>this game was made for a Friendly streamer from Twitch.</p>
+            <h4>How you play?</h4>
+            <p>Click on the image in the midle of the website and you will get points("mayos"), with those points you can buy stuff from the shop that will make you more points.</p>
+            <h10>if anything doesnt work just save the game and refresh the page.</h10>
+            <button class= button onclick="saveGame()">Save Game</button>
+            <button class= button onclick="resetGame()">Reset Game</button>    
+        </div>
+    </div>
+
+    <div class="sectionRight">
+        <table class="shopButton unselectable" onclick="buyCursor()">
+            <tr>
+                <td id="image"><img src="images/cursor.jpg"></td>
+                <td id="nameAndCost">
+                    <p>Cursor</p>
+                    <p><span id="cursorCost">15</span>MP</p>
+                </td>
+                <td id="amount"><span id="cursors">0</span></td>
+            </tr>
+        </table>
+
+        <table class="shopButton unselectable" onclick="buyJar()">
+            <tr>
+                <td id="image"><img src="images/Jar.png"></td>
+                <td id="nameAndCost">
+                    <p>Jar</p>
+                    <p><span id="JarCost">150</span>MP</p>
+                </td>
+                <td id="amount"><span id="Jar">0</span></td>
+            </tr>
+        </table>
+
+        <table class="shopButton unselectable" onclick="buyMayo()">
+            <tr>
+                <td id="image"><img src="images/mayo.png"></td>
+                <td id="nameAndCost">
+                    <p>Mayo</p>
+                    <p><span id="mayoCost">300</span>MP</p>
+                </td>
+                <td id="amount"><span id="mayo">0</span></td>
+            </tr>
+        </table>
+        <table class="shopButton unselectable" onclick="buyMayon()">
+            <tr>
+                <td id="image"><img src="images/MayonVolcano.jpg"></td>
+                <td id="nameAndCost">
+                    <p>Mayon</p>
+                    <p><span id="MayonCost">500</span>MP</p>
+                </td>
+                <td id="amount"><span id="Mayon">0</span></td>
+            </tr>
+        </table>
+       
+    </div>
+    <script>
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let cursors = parseInt(localStorage.getItem('cursors')) || 0;
+        let mayo = parseInt(localStorage.getItem('mayo')) || 0;
+        let Jar = parseInt(localStorage.getItem('Jar')) || 0;
+        let Mayon = parseInt(localStorage.getItem('Jar')) || 0;
+        let cursorCost = parseInt(localStorage.getItem('cursorCost')) || 15;
+        let JarCost = parseInt(localStorage.getItem('JarCost')) || 150;
+        let mayoCost = parseInt(localStorage.getItem('mayoCost')) || 300;
+        let MayonCost = parseInt(localStorage.getItem('MayonCost')) || 500;
+        let scorePerSecond = parseInt(localStorage.getItem('scorePerSecond')) || 0;
+        let intervalId = setInterval(updateScore, 1000);
+
+        document.getElementById("score").innerHTML = score;
+        document.getElementById("cursors").innerHTML = cursors;
+        document.getElementById("Jar").innerHTML = Jar;
+        document.getElementById("mayo").innerHTML = mayo;
+        document.getElementById("Mayon").innerHTML = Mayon;
+        document.getElementById("MayonCost").innerHTML = MayonCost;
+        document.getElementById("cursorCost").innerHTML = cursorCost;
+        document.getElementById("JarCost").innerHTML = JarCost;
+        document.getElementById("mayoCost").innerHTML = mayoCost;
+        document.getElementById("scorepersecond").innerHTML = scorePerSecond;
+
+        function updateScore() {
+            let cursorsContribution = cursors;
+            let JarContribution = Jar * 3;
+            let mayoContribution = mayo * 5;
+            let MayonContribution = Mayon * 10;
+            score += cursorsContribution + mayoContribution + JarContribution;
+            document.getElementById("score").innerHTML = score;
+            document.title = score + " Mayo - MayoClicker";
+            updateScorePerSecond();
+        }
+      
+
+        function updateScorePerSecond() {
+            scorePerSecond = cursors + mayo * 5 + Jar * 3 + Mayon * 10;
+            document.getElementById("scorepersecond").innerHTML = scorePerSecond;
+        }
+
+        var clickingPower = 1;
+
+        function buyCursor() {
+            if (score >= cursorCost) {
+                score -= cursorCost;
+                cursors++;
+                cursorCost = Math.round(cursorCost * 1.15);
+                document.getElementById("score").innerHTML = score;
+                document.getElementById("cursorCost").innerHTML = cursorCost;
+                document.getElementById("cursors").innerHTML = cursors;
+                updateScorePerSecond();// Update score per second after purchasing
+                saveGame(); // Save the game after purchasing 
+                
+            }
+        }
+        function buyJar() {
+             if (score >= JarCost) {
+                score -= JarCost;
+                Jar++;
+                JarCost = Math.round(JarCost * 1.15);
+                document.getElementById("score").innerHTML = score;
+                document.getElementById("JarCost").innerHTML = JarCost;
+                document.getElementById("Jar").innerHTML = Jar;
+                updateScorePerSecond(); // Update score per second after purchasing
+                saveGame(); // Save the game after purchasing 
+                
+            }
+        }
+
+        function buyMayo() {
+            if (score >= mayoCost) {
+                score -= mayoCost;
+                mayo++;
+                mayoCost = Math.round(mayoCost * 1.15);
+                document.getElementById("score").innerHTML = score;
+                document.getElementById("mayoCost").innerHTML = mayoCost;
+                document.getElementById("mayo").innerHTML = mayo;
+                updateScorePerSecond();// Update score per second after purchasing 
+                saveGame();// Save the game after purchasing
+            }
+        }
+        function buyMayon() {
+            if (score >= MayonCost) {
+                score -= MayonCost;
+                Mayon++;
+                MayonCost = Math.round(MayonCost * 1.15);
+                document.getElementById("score").innerHTML = score;
+                document.getElementById("MayonCost").innerHTML = MayonCost;
+                document.getElementById("Mayon").innerHTML = Mayon;
+                updateScorePerSecond();// Update score per second after purchasing
+                saveGame(); // Save the game after purchasing 
+                
+            }
+        }
+
+        function addToScore(amount) {
+            score += amount;
+            document.getElementById("score").innerHTML = score;
+        }
+
+        function saveGame() {
+            localStorage.setItem('score', score);
+            localStorage.setItem('cursors', cursors);
+            localStorage.setItem('mayo', mayo);
+            localStorage.setItem('cursorCost', cursorCost);
+            localStorage.setItem('mayoCost', mayoCost);
+            localStorage.setItem('scorePerSecond', scorePerSecond);
+            localStorage.setItem('Jar', Jar);
+            localStorage.setItem('JarCost', JarCost);
+        }
+
+        // Define resetGame function first
+        function resetGame() {
+            console.log("resetGame() function called.");
+            localStorage.clear();
+            clearInterval(intervalId);
+            score = 0;
+            cursors = 0;
+            mayo = 0;
+            Jar = 0;
+            cursorCost = 15;
+            JarCost = 150;
+            mayoCost = 300;
+            scorePerSecond = 0;
+            document.getElementById("score").innerHTML = score;
+            document.getElementById("cursorCost").innerHTML = cursorCost;
+            document.getElementById("cursors").innerHTML = cursors;
+            document.getElementById("mayoCost").innerHTML = mayoCost;
+            document.getElementById("mayo").innerHTML = mayo;
+            document.getElementById("Jar").innerHTML = Jar;
+            document.getElementById("scorepersecond").innerHTML = scorePerSecond;
+            saveGame(); // Save the game state after resetting
+        }
+
+    </script>
+</body>
+</HTML>
